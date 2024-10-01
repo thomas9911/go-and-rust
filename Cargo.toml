@@ -28,3 +28,11 @@ safer-ffi = { version = "0.1.13", features = [] }
 # If you want to generate the headers, use a feature-gate
 # to opt into doing so:
 headers = ["safer-ffi/headers"]
+
+[profile.release]
+panic = "abort"
+lto = "fat"
+strip = true
+debug = false
+opt-level = "z"
+codegen-units = 1

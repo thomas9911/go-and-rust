@@ -16,7 +16,7 @@ build-run *args: build
 
 go-build:
     # CGO_ENABLED=1 go build -ldflags="-r {{justfile_directory()}}\out" main.go
-    CGO_ENABLED=1 go build -o out/main main.go
+    CGO_ENABLED=1 go build -ldflags "-s -w" -o out/main main.go
 
 generate-headers:
     cargo run --bin generate-headers --features headers
