@@ -10,6 +10,7 @@ rust-build:
     cargo build --release
     @cp target/release/libgo_and_rust.a out/
     # @cp target/release/go_and_rust.dll out/
+    @just generate-headers
 
 build-run *args: build
     @just run {{args}}
