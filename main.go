@@ -70,27 +70,46 @@ func (song Song) intoC() (song_c C.Song_t) {
 	return song_c
 }
 
+func CountNumbers(text string) int {
+	cstr := C.CString(text)
+	defer C.free(unsafe.Pointer(cstr))
+
+	out := C.count_numbers(cstr)
+	return int(out)
+}
+
+func NewSong(title string, artist string, releaseYear uint) Song {
+	ctitle := C.CString(title)
+	defer C.free(unsafe.Pointer(ctitle))
+
+	cartist := C.CString(artist)
+	defer C.free(unsafe.Pointer(cartist))
+
+	songC := C.new_song(ctitle, cartist, C.uint(releaseYear))
+	return SongintoGo(songC)
+}
+
+func TryNewSong(title string, artist string, releaseYear uint) (Song, error) {
+	ctitle := C.CString(title)
+	defer C.free(unsafe.Pointer(ctitle))
+
+	cartist := C.CString(artist)
+	defer C.free(unsafe.Pointer(cartist))
+
+	return SongResultIntoGo(C.try_new_song(ctitle, cartist, C.uint(releaseYear)))
+}
+
 func main() {
 	argsWithoutProg := os.Args[1:]
 	word := strings.Join(argsWithoutProg, " ")
 
-	str1 := C.CString(word)
-	defer C.free(unsafe.Pointer(str1))
+	out := CountNumbers(word)
 
-	out := C.count_numbers(str1)
-
-	title := C.CString("Hello")
-	defer C.free(unsafe.Pointer(title))
-
-	artist := C.CString("Adele")
-	defer C.free(unsafe.Pointer(artist))
-
-	songC := C.new_song(title, artist, 2015)
-	song := SongintoGo(songC)
+	song := NewSong("Hello", "Adele", 2015)
 
 	fmt.Printf("%v\n", song)
 
-	song2, err := SongResultIntoGo(C.try_new_song(title, artist, 2015))
+	song2, err := TryNewSong("Hello", "Adele", 2015)
 	if err != nil {
 		log.Fatal(err)
 	}
