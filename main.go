@@ -70,6 +70,10 @@ func (song Song) intoC() (song_c C.Song_t) {
 	return song_c
 }
 
+func (song Song) Print() {
+	C.print_song(song.intoC())
+}
+
 func CountNumbers(text string) int {
 	cstr := C.CString(text)
 	defer C.free(unsafe.Pointer(cstr))
@@ -114,7 +118,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("=> %v\n", song2)
+	// fmt.Printf("=> %v\n", song2)
+	song2.Print()
 
 	fmt.Printf("Counted %d numbers\n", out)
 }

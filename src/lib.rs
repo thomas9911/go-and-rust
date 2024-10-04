@@ -2,7 +2,7 @@ use ::safer_ffi::prelude::*;
 use safer_ffi::option::TaggedOption;
 
 #[derive_ReprC]
-#[repr(u8)] 
+#[repr(u8)]
 pub enum SongError {
     InvalidTitle = 0,
     InvalidArtist = 1,
@@ -33,7 +33,7 @@ impl<T, E> GoResult<T, E> {
 }
 
 #[derive_ReprC]
-#[repr(C)]      // <- defined C layout is mandatory!
+#[repr(C)] // <- defined C layout is mandatory!
 pub struct Song {
     title: char_p::Box,
     artist: char_p::Box,
@@ -42,24 +42,36 @@ pub struct Song {
 
 #[ffi_export]
 fn new_song(title: char_p::Ref<'_>, artist: char_p::Ref<'_>, release_year: u32) -> Song {
-    Song{
+    Song {
         title: title.to_owned(),
         artist: artist.to_owned(),
-        release_year
+        release_year,
     }
 }
 
 #[ffi_export]
-fn try_new_song(title: char_p::Ref<'_>, artist: char_p::Ref<'_>, release_year: u32) -> GoResult<Song, SongError> {
+fn try_new_song(
+    title: char_p::Ref<'_>,
+    artist: char_p::Ref<'_>,
+    release_year: u32,
+) -> GoResult<Song, SongError> {
     if release_year < 1400 || release_year > 2100 {
         return GoResult::error(SongError::InvalidReleaseYear);
     }
-    
-    GoResult::ok(Song{
+
+    GoResult::ok(Song {
         title: title.to_owned(),
         artist: artist.to_owned(),
-        release_year
+        release_year,
     })
+}
+
+#[ffi_export]
+fn print_song(song: Song) {
+    println!(
+        "Song: {} by {} released {}",
+        song.title, song.artist, song.release_year
+    );
 }
 
 pub fn count_numbers_inner(s: &str) -> u32 {

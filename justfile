@@ -21,3 +21,7 @@ go-build:
 
 generate-headers:
     cargo run --bin generate-headers --features headers
+
+fmt:
+    cargo fmt
+    go fmt ./main.go
